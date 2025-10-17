@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Наша Галерея 💖</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(120deg, #ff9a9e, #fad0c4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    h1 { margin: 20px 0; }
+    .slideshow-container {
+      position: relative;
+      max-width: 90vw;
+      max-height: 90vh;
+      width: 90vw;
+      height: 80vh;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      background: #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .slide { display: none; width: 100%; height: 100%; }
+    .slide img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      object-fit: contain;
+      background: #222;
+      border-radius: 15px;
+    }
+    @keyframes fade { from {opacity: 0.4;} to {opacity: 1;} }
+    .caption {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+      background: rgba(0,0,0,0.5);
+      padding: 12px 0;
+      font-size: 16px;
+    }
+    .prev, .next {
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: white;
+      font-weight: bold;
+      font-size: 30px;
+      padding: 12px;
+      border-radius: 0 3px 3px 0;
+      user-select: none;
+      background: rgba(0,0,0,0.3);
+      transition: 0.3s;
+      z-index: 2;
+    }
+    .next { right: 0; border-radius: 3px 0 0 3px; }
+    .prev:hover, .next:hover { background: rgba(0,0,0,0.6); }
+    .dots { text-align: center; margin: 15px 0; }
+    .dot {
+      height: 12px;
+      width: 12px;
+      margin: 0 4px;
+      background-color: rgba(255,255,255,0.6);
+      border-radius: 50%;
+      display: inline-block;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .dot.active { background-color: #fff; transform: scale(1.2); }
+    .btn { margin: 20px 0; padding: 10px 20px; background: #fff; color: #ff6b81; border-radius: 25px; text-decoration: none; font-weight: bold; transition: 0.3s; }
+    .btn:hover { background: #ff6b81; color: #fff; }
+  </style>
+</head>
+<body>
+  <h1>Наша Галерея 💞</h1>
+
+  <div class="slideshow-container" id="slideshow"></div>
+  <div class="dots" id="dots"></div>
+
+  <a href="index.html" class="btn">На главную 🏠</a>
+
+  <script>
+    const photos = [
+      { file: 'img/06.06.2025.JPG', caption: 'Розы — день когда начали встречаться' },
+      { file: 'img/First massages.jpg', caption: 'Первые сообщения, где я тебя разбудил' },
+      { file: 'img/АХУЕЛ ЗНАТНО С ПОДАРКОВ.JPG', caption: 'Подарки мне)' },
+      { file: 'img/СКАМЕРША КАК Я.PNG', caption: 'Я ЗНАЛ ЧТО ТЫ МОЯ ВОТ ПРЯМ СРАЗУ' },
+      { file: 'img/ДАЖЕ МЕНЯ ПЬЯНОГО ЛЮБИШЬ.PNG', caption: 'КАК МИЛО ХОТЬ Я И В ХЛАМ' },
+      { file: 'img/ДЕЛАЛ НАСТРОЕНИЕ С УТРА.PNG', caption: 'ВОТ ЭТО ПОТУЖНО' },
+      { file: 'img/ЛЮБИШЬ УЧИТЬСЯ.PNG', caption: 'SWPS просто сила' },
+      { file: 'img/МЫ ДВЕ ОБИЖЕНКИ.PNG', caption: 'Плачем, ну хотя бы вместе' },
+      { file: 'img/НУ ХОТЬ ОДНА СОВМЕСТНАЯ.JPG', caption: 'Дада, помогла Саня' },
+      { file: 'img/Я ВСЕРАВНО УКРАДУ.PNG', caption: 'Проверяй время от времени' },
+      { file: 'img/как я мог забыть за эту легенду.PNG', caption: 'Ну я не согласен, но кто-то хочет мне это доказать...' }
+    ];
+
+    const slideshow = document.getElementById('slideshow');
+    const dotsWrap = document.getElementById('dots');
+
+    photos.forEach((p, i) => {
+      const slide = document.createElement('div');
+      slide.className = 'slide';
+      slide.innerHTML = `<img src="${p.file}" alt="Фото ${i+1}"><div class="caption">${p.caption}</div>`;
+      slideshow.appendChild(slide);
+
+      const dot = document.createElement('span');
+      dot.className = 'dot';
+      dot.onclick = () => currentSlide(i + 1);
+      dotsWrap.appendChild(dot);
+    });
+
+    const prev = document.createElement('a');
+    prev.className = 'prev';
+    prev.innerHTML = '❮';
+    prev.onclick = () => plusSlides(-1);
+    slideshow.appendChild(prev);
+
+    const next = document.createElement('a');
+    next.className = 'next';
+    next.innerHTML = '❯';
+    next.onclick = () => plusSlides(1);
+    slideshow.appendChild(next);
+
+    let slideIndex = 1;
+    showSlides(slideIndex);
+
+    function plusSlides(n) { showSlides(slideIndex += n); }
+    function currentSlide(n) { showSlides(slideIndex = n); }
+
+    function showSlides(n) {
+      const slides = document.getElementsByClassName('slide');
+      const dots = document.getElementsByClassName('dot');
+      if (n > slides.length) slideIndex = 1;
+      if (n < 1) slideIndex = slides.length;
+      for (let i = 0; i < slides.length; i++) slides[i].style.display = "none";
+      for (let i = 0; i < dots.length; i++) dots[i].classList.remove('active');
+      slides[slideIndex - 1].style.display = "block";
+      dots[slideIndex - 1].classList.add('active');
+    }
+
+    setInterval(() => { plusSlides(1); }, 600000); // 10 минут
+  </script>
+</body>
+</html>
